@@ -48,10 +48,10 @@ export default function Home() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 py-10 text-black">
-            <h1 className="text-4xl font-bold mb-6 text-gray-700">To-Do App</h1>
-            <div className='text-lg mb-4 font-semibold text-gray-600'>FrontEnd - Next.js | Backend - Flask</div>
-            <div className="bg-teal-800 p-8 rounded-xl shadow-2xl w-80">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-950 py-10 text-black">
+            <h1 className="text-4xl font-bold mb-6 text-gray-100">To-Do App</h1>
+            <div className='text-lg mb-4 font-semibold text-gray-300'>FrontEnd - Next.js | Backend - Flask</div>
+            <div className="bg-teal-800 p-10 hover:p-8 rounded-xl shadow-2xl w-80 hover:scale-110 hover:mt-5 transition-all duration-500">
                 <div className="mb-4">
                     <input
                         type="text"
