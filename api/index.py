@@ -1,28 +1,38 @@
-from flask import Flask, jsonify, request # type: ignore
-from flask_cors import CORS # type: ignore
-from flask_sqlalchemy import SQLAlchemy # type: ignore
+import os
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv
+
+# Load environment variables from .env file, if it exists
+load_dotenv()
 
 app = Flask(__name__)
-CORS(app)  # This will enable CORS for all routes
+CORS(app)
 
-# Configure the SQLite database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todos.db'
+# Determine the database URI
+database_uri = os.getenv('DATABASE_URL')
+if not database_uri:
+    # Use Vercel's POSTGRES_URL if DATABASE_URL isn't set
+    database_uri = os.getenv('POSTGRES_URL')
+
+if not database_uri:
+    raise RuntimeError("DATABASE_URL or POSTGRES_URL must be set.")
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# Define the ToDo model
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     task = db.Column(db.String(200), nullable=False)
 
-# Create the database and the tables
 with app.app_context():
     db.create_all()
 
 @app.route('/api/todos', methods=['GET', 'POST', 'DELETE'])
 def manage_todos():
     if request.method == 'POST':
-        # Add a new to-do item
         data = request.get_json()
         new_todo = data.get('todo', '')
         if new_todo:
@@ -34,13 +44,11 @@ def manage_todos():
             return jsonify({"error": "No To-Do provided"}), 400
     
     elif request.method == 'GET':
-        # Return all to-do items
         todos = Todo.query.all()
         todos_list = [{"id": todo.id, "task": todo.task} for todo in todos]
         return jsonify({"todos": todos_list})
     
     elif request.method == 'DELETE':
-        # Delete a to-do item by its ID
         data = request.get_json()
         todo_id = data.get('id', None)
         if todo_id is not None:

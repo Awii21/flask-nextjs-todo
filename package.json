@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "next-dev": "next dev",
-    "flask-dev": "set FLASK_DEBUG=1 && pip3 install -r requirements.txt && python3 -m flask --app backend/app run -p 5000",
+    "flask-dev": "set FLASK_DEBUG=1 && pip3 install -r requirements.txt && python3 -m flask --app api/index run -p 5000",
     "dev": "concurrently \"npm run next-dev\" \"npm run flask-dev\"",
     "build": "next build",
     "start": "next start",
@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "concurrently": "^8.2.2",
+    "dotenv": "^16.4.5",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18"
