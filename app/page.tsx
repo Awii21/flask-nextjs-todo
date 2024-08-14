@@ -15,6 +15,7 @@ export default function Home() {
     }, []);
 
     const handleAddTodo = () => {
+        if (newTodo.trim() === '') return;  // Prevent adding empty todos
         fetch('http://127.0.0.1:5000/api/todos', {
             method: 'POST',
             headers: {
@@ -47,6 +48,12 @@ export default function Home() {
         .catch((error) => console.error('Error deleting todo:', error));
     };
 
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            handleAddTodo();
+        }
+    };
+
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-gray-950 py-10 text-black">
             <h1 className="text-4xl font-bold mb-6 text-gray-100">To-Do App</h1>
@@ -57,6 +64,7 @@ export default function Home() {
                         type="text"
                         value={newTodo}
                         onChange={(e) => setNewTodo(e.target.value)}
+                        onKeyPress={handleKeyPress}  // Add this line to listen for key presses
                         placeholder="Enter a new To-Do"
                         className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
