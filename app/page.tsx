@@ -1,5 +1,3 @@
-'use client'
-
 import { useState, useEffect } from 'react';
 
 type Todo = {
@@ -11,16 +9,18 @@ export default function Home() {
     const [todos, setTodos] = useState<Todo[]>([]);
     const [newTodo, setNewTodo] = useState('');
 
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
     useEffect(() => {
-        fetch('http://127.0.0.1:5000/api/todos')
+        fetch(`${apiUrl}/todos`)
             .then((response) => response.json())
             .then((data) => setTodos(data.todos))
             .catch((error) => console.error('Error fetching todos:', error));
-    }, []);
+    }, [apiUrl]);
 
     const handleAddTodo = () => {
         if (newTodo.trim() === '') return;  // Prevent adding empty todos
-        fetch('http://127.0.0.1:5000/api/todos', {
+        fetch(`${apiUrl}/todos`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -38,7 +38,7 @@ export default function Home() {
     };
 
     const handleDeleteTodo = (id: number) => {
-        fetch('http://127.0.0.1:5000/api/todos', {
+        fetch(`${apiUrl}/todos`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -90,4 +90,3 @@ export default function Home() {
         </div>
     );
 }
-
