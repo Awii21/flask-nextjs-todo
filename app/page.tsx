@@ -2,9 +2,13 @@
 
 import { useState, useEffect } from 'react';
 
-export default function Home() {
+type Todo = {
+    id: number;
+    task: string;
+};
 
-    const [todos, setTodos] = useState([]);
+export default function Home() {
+    const [todos, setTodos] = useState<Todo[]>([]);
     const [newTodo, setNewTodo] = useState('');
 
     useEffect(() => {
@@ -27,13 +31,13 @@ export default function Home() {
         })
         .then((response) => response.json())
         .then((data) => {
-            setTodos([...todos, data.todo]);  // Add the new todo to the current state
+            setTodos([...todos, data.todo as Todo]);  // Add the new todo to the current state
             setNewTodo('');  // Clear the input field
         })
         .catch((error) => console.error('Error adding todo:', error));
     };
 
-    const handleDeleteTodo = (id) => {
+    const handleDeleteTodo = (id: number) => {
         fetch('http://127.0.0.1:5000/api/todos', {
             method: 'DELETE',
             headers: {
@@ -44,14 +48,8 @@ export default function Home() {
             })
         })
         .then((response) => response.json())
-        .then((data) => setTodos(todos.filter(todo => todo.id !== id)))
+        .then(() => setTodos(todos.filter(todo => todo.id !== id)))
         .catch((error) => console.error('Error deleting todo:', error));
-    };
-
-    const handleKeyPress = (event) => {
-        if (event.key === 'Enter') {
-            handleAddTodo();
-        }
     };
 
     return (
@@ -64,7 +62,7 @@ export default function Home() {
                         type="text"
                         value={newTodo}
                         onChange={(e) => setNewTodo(e.target.value)}
-                        onKeyPress={handleKeyPress}  // Add this line to listen for key presses
+                        onKeyPress={(event) => event.key === 'Enter' && handleAddTodo()}
                         placeholder="Enter a new To-Do"
                         className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
@@ -92,3 +90,4 @@ export default function Home() {
         </div>
     );
 }
+
